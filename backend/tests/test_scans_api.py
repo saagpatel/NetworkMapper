@@ -1,5 +1,6 @@
 """Tests for routes/scans.py — scan API endpoints."""
 
+import json
 from unittest.mock import patch, AsyncMock
 
 from db import repository
@@ -25,6 +26,22 @@ def test_post_scan_cidr_not_in_whitelist(test_client) -> None:
         json={"target_cidr": "10.0.0.0/8", "profile": "quick"},
     )
     assert resp.status_code == 403
+    body = resp.json()
+    assert body["detail"]["code"] == "CIDR_NOT_WHITELISTED"
+
+
+def test_post_scan_empty_whitelist_blocks_all(test_client) -> None:
+    """Empty whitelist must block every scan — not allow all."""
+    config = test_client.app.state.config
+    config.set("whitelist_cidrs", json.dumps([]))
+
+    resp = test_client.post(
+        "/api/scans",
+        json={"target_cidr": "192.168.1.0/24", "profile": "quick"},
+    )
+    assert resp.status_code == 403
+    body = resp.json()
+    assert body["detail"]["code"] == "NO_WHITELIST_CONFIGURED"
 
 
 def test_post_scan_invalid_profile(test_client) -> None:

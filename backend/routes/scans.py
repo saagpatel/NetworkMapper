@@ -30,7 +30,15 @@ async def start_scan(body: ScanRequest, request: Request) -> SuccessResponse[Sca
     config = request.app.state.config
     whitelist = config.whitelist_cidrs
 
-    if whitelist and body.target_cidr not in whitelist:
+    if not whitelist:
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "code": "NO_WHITELIST_CONFIGURED",
+                "message": "No scan targets configured. Add CIDRs to the whitelist first.",
+            },
+        )
+    if body.target_cidr not in whitelist:
         raise HTTPException(
             status_code=403,
             detail={

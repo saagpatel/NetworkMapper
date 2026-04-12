@@ -3,7 +3,7 @@
 import asyncio
 import logging
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 
 from models.schemas import ScheduleConfig, SuccessResponse
 
@@ -27,6 +27,27 @@ async def get_schedule(request: Request) -> SuccessResponse[ScheduleConfig]:
 async def update_schedule(body: ScheduleConfig, request: Request) -> SuccessResponse[ScheduleConfig]:
     """Update the schedule configuration and reload the scheduler job."""
     config = request.app.state.config
+
+    # Validate the scheduled CIDR against the whitelist before storing
+    if body.target_cidr is not None:
+        whitelist = config.whitelist_cidrs
+        if not whitelist:
+            raise HTTPException(
+                status_code=403,
+                detail={
+                    "code": "NO_WHITELIST_CONFIGURED",
+                    "message": "No scan targets configured. Add CIDRs to the whitelist first.",
+                },
+            )
+        if body.target_cidr not in whitelist:
+            raise HTTPException(
+                status_code=403,
+                detail={
+                    "code": "CIDR_NOT_WHITELISTED",
+                    "message": f"Target {body.target_cidr} is not in the whitelist. "
+                               f"Allowed: {whitelist}",
+                },
+            )
 
     if body.cron_expression is not None:
         config.set("schedule_cron", body.cron_expression or "")
@@ -116,10 +137,26 @@ def _reload_scheduler_job(app: object) -> None:
 
 async def _run_scheduled_scan(app: object, target_cidr: str, profile: str) -> None:
     """Execute a scheduled scan."""
+    logger.info("Scheduled scan starting: %s with profile %s", target_cidr, profile)
+
+    # Re-validate against the whitelist at execution time — the whitelist may have
+    # changed since the job was registered, or the job may have been registered
+    # before whitelist validation was enforced.
+    config = app.state.config  # type: ignore[union-attr]
+    whitelist = config.whitelist_cidrs
+    if not whitelist:
+        logger.error(
+            "Scheduled scan aborted: no whitelist configured (target=%s)", target_cidr
+        )
+        return
+    if target_cidr not in whitelist:
+        logger.error(
+            "Scheduled scan aborted: target %s not in whitelist %s", target_cidr, whitelist
+        )
+        return
+
     from models.schemas import ScanProgressEvent
     from scanner.orchestrator import run_scan
-
-    logger.info("Scheduled scan starting: %s with profile %s", target_cidr, profile)
 
     # Create a dummy queue (no SSE consumer for scheduled scans)
     queue: asyncio.Queue[ScanProgressEvent] = asyncio.Queue()
