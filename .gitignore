@@ -41,3 +41,4 @@ htmlcov/
 # Node
 node_modules/
 frontend/dist/
+CLAUDE.md.bak
