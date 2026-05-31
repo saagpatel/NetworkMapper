@@ -16,6 +16,7 @@ ENV/
 # IDE
 .idea/
 .vscode/
+CLAUDE.md.bak
 *.swp
 *.swo
 *~

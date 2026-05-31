@@ -35,9 +35,9 @@ cd frontend && npm install
 ### Usage
 ```bash
 # Start backend
-cd backend && sudo python main.py
+./scripts/run.sh
 
-# Start frontend (separate terminal)
+# Start frontend (separate terminal, dev mode)
 cd frontend && npm run dev
 # Open http://localhost:5173
 ```
