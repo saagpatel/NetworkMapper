@@ -127,7 +127,7 @@ This is operator-internal infrastructure tooling. "Ship public"
 doesn't apply. Operational concerns:
 
 1. **Sudo access posture** — ARP requires root. On macOS, this
-   means `sudo python main.py`. Verify the operator's workflow
+   means `./scripts/run.sh`. Verify the operator's workflow
    handles this cleanly (alias, sudoers entry for the specific
    command, or run-as-root LaunchAgent).
 2. **NIST NVD CVE feed sync cadence** — verify feed is being
@@ -182,7 +182,7 @@ NVD feed verification.
    local network audit), substantively shipped."
 4. Verify NIST NVD CVE feed connectivity.
 5. Verify OUI vendor database freshness.
-6. Run `pytest backend/` — expect ~35 tests passing per memory.
+6. Run `pytest backend/tests/` — expect ~150 tests passing (code-verified).
 7. Run a Quick-profile scan against operator's LAN as smoke test
    (sudo required).
 
@@ -196,10 +196,10 @@ NVD feed verification.
 | Default branch | `main` |
 | Build system | Python 3.11+ + FastAPI + scapy + nmap + APScheduler + React + Cytoscape.js |
 | Audience | **Operator self** (own LAN) |
-| Distribution | **`git clone` + `pip install` + `sudo python main.py`** (not PyPI) |
+| Distribution | **`git clone` + `pip install` + `./scripts/run.sh`** (not PyPI) |
 | Required prerequisites | nmap (`brew install nmap`), Python 3.11+, Node 18+, **root/sudo for ARP** |
 | Phases shipped | ARP sweep + nmap enrichment + device classification + risk engine + CVE matching + Cytoscape topology + APScheduler + SQLite history. **Substantively beyond memory's "Phase 0".** |
-| Test count | ~35 per memory |
+| Test count | ~150 (code-verified) |
 | Sensitive data | `~/.netmapper/netmapper.db` (operator's full LAN inventory) |
 | Migration state | No `legacy-origin` remote |
 | Distinguishing feature | **Third operator-tool cluster member. Introduces single-user local-audit clone-and-run sub-shape.** Operator-tool cluster reaches 3 with 3 distinct sub-shapes (matches iOS / static-host cluster maturity pattern). Memory drift correction (Phase 0 → substantively shipped). |
