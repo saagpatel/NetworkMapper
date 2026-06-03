@@ -23,13 +23,13 @@ cd frontend && npm run dev  # http://localhost:5173
 cd frontend && npm run build  # tsc -b && vite build
 
 # Tests and lint
-python -m pytest tests/ -v
-ruff check src/ tests/
+pytest backend/tests/ -v
+ruff check backend/
 ```
 
 ## Conventions
 
-- All nmap and scapy calls route through `src/scanner/` — never call subprocess directly from route handlers.
+- All nmap and scapy calls route through `backend/scanner/` — never call subprocess directly from route handlers.
 - Store all scan results, credentials, and config under `~/.netmapper/` — no data outside that directory.
 - Scan gate: every scan requires whitelist validation AND a frontend modal confirmation before executing.
 - CVE data import runs as a background job with progress feedback — never imported synchronously at startup.
