@@ -1,6 +1,5 @@
 """Tests for routes/schedule.py — schedule API security and behaviour."""
 
-import asyncio
 import json
 from unittest.mock import AsyncMock, MagicMock, patch
 

@@ -24,7 +24,7 @@ export function ScanModal({ open, onClose, onScanStarted }: ScanModalProps) {
   useEffect(() => {
     if (!open) return;
     fetchWhitelist().then((list) => {
-      if (list.length > 0 && !cidr) setCidr(list[0]);
+      if (list.length > 0) setCidr((current) => current || list[0]);
     }).catch(() => {});
   }, [open]);
 

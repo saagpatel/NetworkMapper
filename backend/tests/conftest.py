@@ -2,7 +2,6 @@
 
 import os
 import sys
-import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -12,8 +11,6 @@ from fastapi.testclient import TestClient
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
-
-from db.schema import init_db
 
 
 @pytest.fixture()
@@ -28,6 +25,8 @@ def tmp_data_dir(tmp_path: Path) -> Path:
 @pytest.fixture()
 def db_path(tmp_data_dir: Path) -> Path:
     """Provide an initialized test database."""
+    from db.schema import init_db
+
     path = tmp_data_dir / "netmapper.db"
     init_db(path)
     return path

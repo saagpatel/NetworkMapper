@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Database, RefreshCw } from 'lucide-react';
 import type { CVEIndexStatus } from '../types';
 import { fetchCVEStatus, refreshCVE } from '../lib/api';
@@ -7,15 +7,15 @@ export function CVEStatusBar() {
   const [status, setStatus] = useState<CVEIndexStatus | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  const loadStatus = async () => {
+  const loadStatus = useCallback(async () => {
     try {
       const s = await fetchCVEStatus();
       setStatus(s);
     } catch { /* ignore */ }
-  };
+  }, []);
 
   useEffect(() => {
-    loadStatus();
+    fetchCVEStatus().then(setStatus).catch(() => {});
   }, []);
 
   // Poll during download
@@ -23,7 +23,7 @@ export function CVEStatusBar() {
     if (!status?.downloading) return;
     const interval = setInterval(loadStatus, 5000);
     return () => clearInterval(interval);
-  }, [status?.downloading]);
+  }, [loadStatus, status?.downloading]);
 
   const handleRefresh = async () => {
     setRefreshing(true);

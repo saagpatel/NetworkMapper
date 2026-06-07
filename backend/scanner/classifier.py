@@ -1,6 +1,6 @@
 """Rule-based device type classifier — ports + OUI + service heuristics."""
 
-from models.internal import NmapHostResult, PortResult
+from models.internal import NmapHostResult
 
 # Vendor pattern lists — matched via substring against lowercased vendor name
 ROUTER_VENDOR_PATTERNS = [

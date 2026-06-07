@@ -2,12 +2,11 @@
 
 import asyncio
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from db import repository
-from db.schema import init_db
 from models.internal import NmapHostResult, PortResult
 from models.schemas import ScanProgressEvent
 from scanner.orchestrator import run_scan

@@ -75,7 +75,6 @@ def setup_scheduler(app: object) -> None:
     """Initialize APScheduler and register the scan job if configured."""
     try:
         from apscheduler.schedulers.asyncio import AsyncIOScheduler
-        from apscheduler.triggers.cron import CronTrigger
     except ImportError:
         logger.warning("APScheduler not available — scheduled scans disabled")
         return

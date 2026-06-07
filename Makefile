@@ -1,16 +1,16 @@
 .PHONY: install test lint clean run
 
 install:
-	pip install -r requirements.txt
+	python -m pip install -r backend/requirements.txt
 
 test:
-	python -m pytest tests/ -v
+	python -m pytest backend/tests/ -v
 
 lint:
-	ruff check src/ tests/
+	ruff check backend/
 
 run:
-	python -m src
+	./scripts/run.sh
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null; rm -rf .pytest_cache

@@ -11,15 +11,27 @@ interface DevicePanelProps {
 
 export function DevicePanel({ deviceId, onClose }: DevicePanelProps) {
   const [device, setDevice] = useState<DeviceDetail | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [failedDeviceId, setFailedDeviceId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!deviceId) { setDevice(null); return; }
-    setLoading(true);
+    if (!deviceId) return;
+
+    let cancelled = false;
     fetchDevice(deviceId)
-      .then(setDevice)
-      .catch(() => setDevice(null))
-      .finally(() => setLoading(false));
+      .then((nextDevice) => {
+        if (cancelled) return;
+        setFailedDeviceId(null);
+        setDevice(nextDevice);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setFailedDeviceId(deviceId);
+        setDevice(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [deviceId]);
 
   useEffect(() => {
@@ -29,6 +41,9 @@ export function DevicePanel({ deviceId, onClose }: DevicePanelProps) {
   }, [onClose]);
 
   if (!deviceId) return null;
+
+  const selectedDevice = device?.id === deviceId ? device : null;
+  const loading = !selectedDevice && failedDeviceId !== deviceId;
 
   return (
     <div className="fixed right-0 top-0 h-full w-[420px] bg-surface-raised border-l border-border overflow-y-auto z-50 shadow-2xl">
@@ -47,49 +62,49 @@ export function DevicePanel({ deviceId, onClose }: DevicePanelProps) {
         </div>
       )}
 
-      {device && !loading && (
+      {selectedDevice && !loading && (
         <div className="p-4 space-y-6">
           {/* Header */}
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold font-mono">{device.ip_address}</span>
-              <span className={`px-2 py-0.5 rounded text-xs font-bold ${riskBgClass(device.risk_score)}`}>
-                {riskLabel(device.risk_score)} ({device.risk_score})
+              <span className="text-2xl font-bold font-mono">{selectedDevice.ip_address}</span>
+              <span className={`px-2 py-0.5 rounded text-xs font-bold ${riskBgClass(selectedDevice.risk_score)}`}>
+                {riskLabel(selectedDevice.risk_score)} ({selectedDevice.risk_score})
               </span>
             </div>
-            {device.hostname && <p className="text-text-secondary">{device.hostname}</p>}
+            {selectedDevice.hostname && <p className="text-text-secondary">{selectedDevice.hostname}</p>}
             <span className="inline-block px-2 py-0.5 rounded bg-accent/20 text-accent text-xs font-medium uppercase">
-              {device.device_type}
+              {selectedDevice.device_type}
             </span>
           </div>
 
           {/* Info */}
           <div className="space-y-2 text-sm">
-            <Row label="MAC" value={device.mac_address} mono />
-            {device.vendor && <Row label="Vendor" value={device.vendor} />}
-            {device.os_guess && <Row label="OS" value={`${device.os_guess} (${device.os_accuracy}%)`} />}
+            <Row label="MAC" value={selectedDevice.mac_address} mono />
+            {selectedDevice.vendor && <Row label="Vendor" value={selectedDevice.vendor} />}
+            {selectedDevice.os_guess && <Row label="OS" value={`${selectedDevice.os_guess} (${selectedDevice.os_accuracy}%)`} />}
           </div>
 
           {/* Risk Summary */}
-          {device.risk_summary && (
+          {selectedDevice.risk_summary && (
             <div className="p-3 rounded-lg bg-surface-overlay text-sm leading-relaxed">
               <div className="flex items-center gap-2 mb-1 text-text-secondary text-xs font-bold uppercase tracking-wider">
                 <Shield size={14} /> Risk Summary
               </div>
-              {device.risk_summary}
+              {selectedDevice.risk_summary}
             </div>
           )}
 
           {/* Ports */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-2">
-              Open Ports ({device.ports.length})
+              Open Ports ({selectedDevice.ports.length})
             </h3>
-            {device.ports.length === 0 ? (
+            {selectedDevice.ports.length === 0 ? (
               <p className="text-sm text-text-secondary">No open ports detected</p>
             ) : (
               <div className="space-y-1">
-                {device.ports.map((p) => (
+                {selectedDevice.ports.map((p) => (
                   <div key={`${p.port}-${p.protocol}`} className="flex items-center gap-2 text-sm py-1.5 px-2 rounded bg-surface-overlay/50">
                     <span className="font-mono font-bold w-14">{p.port}</span>
                     <span className="text-text-secondary flex-1">{p.service || '—'}</span>
@@ -110,13 +125,13 @@ export function DevicePanel({ deviceId, onClose }: DevicePanelProps) {
           </div>
 
           {/* CVE Matches */}
-          {device.cve_matches.length > 0 && (
+          {selectedDevice.cve_matches.length > 0 && (
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-2">
-                CVE Matches ({device.cve_matches.length})
+                CVE Matches ({selectedDevice.cve_matches.length})
               </h3>
               <div className="space-y-2">
-                {device.cve_matches.map((cve) => (
+                {selectedDevice.cve_matches.map((cve) => (
                   <div key={cve.cve_id} className="p-2 rounded-lg bg-surface-overlay text-sm">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono font-bold text-xs">{cve.cve_id}</span>

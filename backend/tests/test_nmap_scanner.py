@@ -2,9 +2,8 @@
 
 from unittest.mock import MagicMock, patch
 
-from scanner.nmap_scanner import scan_hosts, _parse_ports, _build_version_string
+from scanner.nmap_scanner import scan_hosts, _build_version_string
 from scanner.profile import get_profile
-from models.internal import PortResult
 
 
 def _mock_host(state="up", tcp_ports=None, osmatch=None, mac=None, hostnames=None):

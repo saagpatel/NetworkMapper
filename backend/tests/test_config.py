@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 
 from config import AppConfig
-from db.schema import init_db
 
 
 def test_default_whitelist_seeded(db_path: Path) -> None:

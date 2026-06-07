@@ -1,7 +1,6 @@
 """IEEE OUI resolver — download OUI CSV and look up MAC vendor names."""
 
 import csv
-import io
 import logging
 from pathlib import Path
 

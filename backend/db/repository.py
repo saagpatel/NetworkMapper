@@ -2,7 +2,6 @@
 
 import logging
 import sqlite3
-from datetime import datetime, UTC
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -110,7 +109,7 @@ def upsert_device(
     On conflict: updates ip, hostname, vendor, device_type, os_guess, os_accuracy,
     last_seen_scan, and risk_score. Preserves first_seen_scan.
     """
-    cursor = conn.execute(
+    conn.execute(
         """
         INSERT INTO devices (
             mac_address, ip_address, hostname, vendor, device_type,

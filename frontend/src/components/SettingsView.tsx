@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Trash2, Save, Clock } from 'lucide-react';
 import { fetchWhitelist, ApiError } from '../lib/api';
-import { useToast } from './Toast';
+import { useToast } from './toast-context';
 import type { ScanProfile } from '../types';
 
 export function SettingsView() {
@@ -22,7 +22,7 @@ function WhitelistSection() {
 
   useEffect(() => {
     fetchWhitelist().then(setCidrs).catch(() => toast('error', 'Failed to load whitelist'));
-  }, []);
+  }, [toast]);
 
   const addCidr = () => {
     const trimmed = newCidr.trim();

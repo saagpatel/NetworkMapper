@@ -1,17 +1,13 @@
 """Scan routes — POST /api/scans, GET /api/scans/{id}, SSE progress stream."""
 
 import asyncio
-import json
 import logging
-from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
 from db import repository
 from models.schemas import (
-    ErrorDetail,
-    ErrorResponse,
     ScanProgressEvent,
     ScanRequest,
     ScanRunResponse,

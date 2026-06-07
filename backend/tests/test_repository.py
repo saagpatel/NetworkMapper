@@ -3,7 +3,6 @@
 from pathlib import Path
 
 from db import repository
-from db.schema import init_db
 
 
 def _conn(db_path: Path):

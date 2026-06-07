@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from db import repository
-from models.internal import NmapHostResult, PortResult
+from models.internal import NmapHostResult
 from models.schemas import ScanProgressEvent
 from oui.resolver import OUIResolver
 from scanner import arp_scanner, classifier, risk_engine
