@@ -18,7 +18,9 @@ export function useScanHistory() {
     }
   }, []);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    Promise.resolve().then(refresh);
+  }, [refresh]);
 
   return { scans, loading, refresh };
 }
