@@ -20,7 +20,9 @@ export function useDevices() {
     }
   }, []);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    Promise.resolve().then(refresh);
+  }, [refresh]);
 
   return { devices, loading, error, refresh };
 }
