@@ -1,4 +1,4 @@
-fastapi>=0.139.0,<1
+fastapi>=0.140.7,<1
 uvicorn[standard]>=0.50.2,<1
 python-nmap>=0.7.1,<1
 scapy>=2.7.0,<3
