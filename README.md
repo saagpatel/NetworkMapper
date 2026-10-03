@@ -10,10 +10,10 @@ NetMapper is a local network scanner with a browser-based UI. Sweep your LAN wit
 
 - **ARP sweep** — fast LAN discovery via scapy, no credentials required
 - **nmap enrichment** — port scanning, service banners, OS fingerprinting (Quick / Standard / Deep profiles)
-- **Device classification** — rule-based categorization using open ports, OUI vendor lookup, and service names
+- **Device classification** — rule-based categorization using open ports, OUI vendor lookup, and hostnames
 - **Risk engine** — flags high-risk open ports and matches service versions against NVD CVEs
 - **Topology graph** — interactive Cytoscape.js network map in the browser
-- **Persistent history** — scan results in SQLite at `~/.netmapper/netmapper.db`
+- **Persistent history** — scan results in SQLite at `netmapper.db` under `NETMAPPER_DATA_DIR` (default: `~/.netmapper/`)
 - **Scheduled scans** — optional cron expression via the settings UI (APScheduler)
 
 ## Quick Start
