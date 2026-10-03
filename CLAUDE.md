@@ -9,7 +9,7 @@ Local network discovery and security posture tool. Python FastAPI backend (requi
 - scapy 2.7+ — ARP scanning for fast LAN discovery
 - SQLite via Python `sqlite3` stdlib — single-file DB at `netmapper.db` under `NETMAPPER_DATA_DIR` (default: `~/.netmapper/`)
 - APScheduler 3.11.3+ — background scheduled scanning
-- React 19+ / TypeScript 7 strict / Cytoscape.js 3.33+ / Vite 8+
+- React 19+ / TypeScript 6.0.3 strict / Cytoscape.js 3.33+ / Vite 8+
 
 ## Build / Test / Run
 
@@ -73,7 +73,7 @@ See IMPLEMENTATION-ROADMAP.md for full phase details and acceptance criteria.
 - React: 19+ — frontend SPA
 - Cytoscape.js: 3.33+ — network topology graph
 - Vite: 8+ — frontend build tool (output served by FastAPI)
-- TypeScript: 7 — strict mode throughout
+- TypeScript: 6.0.3 — strict mode throughout; kept below 6.1 for the lint tooling's peer range
 
 ## How To Run
 
