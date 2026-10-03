@@ -21,7 +21,7 @@ NetMapper is a local network scanner with a browser-based UI. Sweep your LAN wit
 ### Prerequisites
 - Python 3.11+
 - nmap installed (`brew install nmap` on macOS)
-- Node.js 22.12+ and npm for the Vite 8 frontend
+- Node.js 24+ and npm for the locked ESLint/Vite frontend
 - Root/sudo access for ARP scanning
 
 ### Installation
