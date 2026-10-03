@@ -63,11 +63,10 @@ There is no frontend unit/browser test suite configured. `make lint` is an optio
 Ruff lane, but Ruff is not installed by `backend/requirements.txt`; provision it
 separately before invoking that target. No formatter is configured.
 
-The current frontend lock has TypeScript 7 while `typescript-eslint` declares
-TypeScript support below 6.1, so normal `npm ci` can fail with `ERESOLVE`. Treat that
-as a dependency compatibility gate: do not bypass peers with `--force` or
-`--legacy-peer-deps`, and do not claim frontend checks passed when installation
-failed. Dependency repair is separate from these instructions.
+The frontend pins TypeScript 6.0.3 to stay within `typescript-eslint`'s published
+TypeScript support range (below 6.1). Keep that compatibility when updating the
+compiler or linter; do not bypass peers with `--force` or `--legacy-peer-deps`,
+and do not claim frontend checks passed when installation failed.
 
 For changed UI/scan-report behavior, use a disposable local checkout, temporary
 `NETMAPPER_DATA_DIR`, and synthetic or mocked API responses. Inspect the affected
